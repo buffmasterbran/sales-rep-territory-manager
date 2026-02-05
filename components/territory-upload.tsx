@@ -4,21 +4,11 @@ import { useState, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
 import Papa from "papaparse"
 import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Upload, FileText, CheckCircle, AlertCircle, XCircle, Download } from "lucide-react"
-import type { Channel, UploadResult } from "@/lib/types"
-import { CHANNELS } from "@/lib/types"
+import type { UploadResult } from "@/lib/types"
 
 export function TerritoryUpload() {
-  const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [parsedData, setParsedData] = useState<{ zip: string; rep_email: string }[] | null>(null)
   const [parseErrors, setParseErrors] = useState<string[]>([])
@@ -111,7 +101,7 @@ export function TerritoryUpload() {
   })
 
   const handleUpload = async () => {
-    if (!selectedChannel || !parsedData) return
+    if (!parsedData) return
 
     setIsUploading(true)
     setUploadResult(null)
@@ -120,10 +110,7 @@ export function TerritoryUpload() {
       const response = await fetch("/api/assignments/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          channel: selectedChannel,
-          rows: parsedData,
-        }),
+        body: JSON.stringify({ rows: parsedData }),
       })
 
       const result = await response.json()
@@ -168,44 +155,13 @@ export function TerritoryUpload() {
         </CardContent>
       </Card>
 
-      {/* Channel Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Step 1: Select Channel</CardTitle>
-          <CardDescription>
-            Choose which channel these territory assignments are for.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="w-full max-w-sm">
-            <Label htmlFor="channel-select" className="sr-only">
-              Channel
-            </Label>
-            <Select
-              value={selectedChannel || ""}
-              onValueChange={(value) => setSelectedChannel(value as Channel)}
-            >
-              <SelectTrigger id="channel-select">
-                <SelectValue placeholder="Select a channel" />
-              </SelectTrigger>
-              <SelectContent>
-                {CHANNELS.map((channel) => (
-                  <SelectItem key={channel} value={channel}>
-                    {channel}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* CSV Upload */}
       <Card>
         <CardHeader>
-          <CardTitle>Step 2: Upload CSV File</CardTitle>
+          <CardTitle>Upload Territory Assignments</CardTitle>
           <CardDescription>
-            Upload your completed CSV file with territory assignments.
+            Upload a CSV with zip codes and rep emails. The channel is automatically 
+            determined from each rep's assigned channel.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -270,26 +226,18 @@ export function TerritoryUpload() {
               </p>
             </div>
           )}
-        </CardContent>
-      </Card>
 
-      {/* Upload Button */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Step 3: Upload Assignments</CardTitle>
-          <CardDescription>
-            Review and upload the territory assignments. Existing assignments for
-            the same zip+channel will be updated.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            onClick={handleUpload}
-            disabled={!selectedChannel || !parsedData || isUploading}
-            className="w-full sm:w-auto"
-          >
-            {isUploading ? "Uploading..." : "Upload Assignments"}
-          </Button>
+          {/* Upload Button */}
+          {parsedData && (
+            <div className="mt-4">
+              <Button
+                onClick={handleUpload}
+                disabled={isUploading}
+              >
+                {isUploading ? "Uploading..." : "Upload Assignments"}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -339,7 +287,7 @@ export function TerritoryUpload() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Your CSV file must have these two columns:
+            Your CSV file needs just two columns:
           </p>
           <div className="bg-muted p-4 rounded-md overflow-x-auto">
             <table className="text-sm w-full">
@@ -359,6 +307,14 @@ export function TerritoryUpload() {
           <div className="space-y-2 text-sm">
             <p><strong>zip</strong> - 5-digit US zip code</p>
             <p><strong>rep_email</strong> - Email of an existing rep in the system</p>
+          </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4 text-sm">
+            <p className="font-medium text-blue-800">How it works:</p>
+            <ul className="mt-2 text-blue-700 space-y-1 list-disc list-inside">
+              <li>The channel is automatically determined from the rep's record</li>
+              <li>Each rep already has an assigned channel (Golf, Promo, or Gift)</li>
+              <li>No need to select a channel — just upload zip + email pairs</li>
+            </ul>
           </div>
           <div className="bg-amber-50 border border-amber-200 rounded-md p-4 text-sm">
             <p className="font-medium text-amber-800">Important Notes:</p>

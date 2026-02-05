@@ -185,9 +185,9 @@ export function HelpGuide() {
               <div className="flex items-start gap-3">
                 <Upload className="h-4 w-4 mt-1 text-green-500" />
                 <div>
-                  <p className="font-medium text-sm">3. Select Channel & Upload</p>
+                  <p className="font-medium text-sm">3. Upload</p>
                   <p className="text-sm text-muted-foreground">
-                    Choose the channel (Golf, Promo, or Gift) and upload. One upload per channel.
+                    The channel is automatically determined from each rep's record — no need to select it!
                   </p>
                 </div>
               </div>
@@ -195,8 +195,9 @@ export function HelpGuide() {
 
             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
               <p className="text-sm text-blue-800">
-                <strong>How it works:</strong> If a zip code already has an assignment for that channel, 
-                the rep is <strong>replaced</strong>. New zips are <strong>added</strong>.
+                <strong>How it works:</strong> The system looks up each rep by email and uses their 
+                assigned channel. If a zip+channel already exists, the rep is <strong>replaced</strong>. 
+                New zips are <strong>added</strong>.
               </p>
             </div>
 

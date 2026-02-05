@@ -17,14 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { channel, rows } = body as { channel: Channel; rows: UploadRow[] }
-
-    if (!channel || !['Golf', 'Promo', 'Gift'].includes(channel)) {
-      return NextResponse.json(
-        { error: 'Invalid channel. Must be Golf, Promo, or Gift.' },
-        { status: 400 }
-      )
-    }
+    const { rows } = body as { rows: UploadRow[] }
 
     if (!rows || !Array.isArray(rows) || rows.length === 0) {
       return NextResponse.json(
@@ -35,20 +28,20 @@ export async function POST(request: NextRequest) {
 
     const supabase = createAdminClient()
 
-    // Get all reps to build email -> id lookup
+    // Get all reps with their channel to build email -> {id, channel} lookup
     const { data: reps, error: repsError } = await supabase
       .from('reps')
-      .select('id, email')
+      .select('id, email, channel')
 
     if (repsError) {
       console.error('Error fetching reps:', repsError)
       return NextResponse.json({ error: 'Failed to fetch reps' }, { status: 500 })
     }
 
-    // Build email -> id map (case-insensitive)
-    const emailToRepId = new Map<string, string>()
+    // Build email -> {id, channel} map (case-insensitive)
+    const emailToRep = new Map<string, { id: string; channel: Channel }>()
     for (const rep of reps || []) {
-      emailToRepId.set(rep.email.toLowerCase(), rep.id)
+      emailToRep.set(rep.email.toLowerCase(), { id: rep.id, channel: rep.channel as Channel })
     }
 
     const result: UploadResult = {
@@ -84,9 +77,9 @@ export async function POST(request: NextRequest) {
 
       // Look up rep by email
       const email = row.rep_email.toString().trim().toLowerCase()
-      const repId = emailToRepId.get(email)
+      const rep = emailToRep.get(email)
 
-      if (!repId) {
+      if (!rep) {
         result.errors.push({
           row: rowNum,
           message: `Rep not found with email "${row.rep_email}"`,
@@ -94,11 +87,11 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      // Valid row - add to batch
+      // Valid row - add to batch using the rep's channel
       validAssignments.push({
         zip_code: zip,
-        channel,
-        rep_id: repId,
+        channel: rep.channel,
+        rep_id: rep.id,
       })
     }
 
