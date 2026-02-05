@@ -31,7 +31,7 @@ const repSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
   agency: z.string().optional(),
-  channel: z.enum(["Golf", "Promo", "Gift"], {
+  channel: z.enum(["Golf", "Outdoor", "Gift"], {
     required_error: "Channel is required",
   }),
 })

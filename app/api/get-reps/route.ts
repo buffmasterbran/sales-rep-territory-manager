@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       zip,
       reps: {
         Golf: null,
-        Promo: null,
+        Outdoor: null,
         Gift: null,
       },
     }

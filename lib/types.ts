@@ -1,6 +1,6 @@
-export type Channel = 'Golf' | 'Promo' | 'Gift'
+export type Channel = 'Golf' | 'Outdoor' | 'Gift'
 
-export const CHANNELS: Channel[] = ['Golf', 'Promo', 'Gift']
+export const CHANNELS: Channel[] = ['Golf', 'Outdoor', 'Gift']
 
 export interface Rep {
   id: string
@@ -40,7 +40,7 @@ export interface GetRepsResponse {
   zip: string
   reps: {
     Golf: Rep | null
-    Promo: Rep | null
+    Outdoor: Rep | null
     Gift: Rep | null
   }
 }

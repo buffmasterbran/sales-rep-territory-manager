@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS reps (
   email TEXT NOT NULL UNIQUE,
   phone TEXT,
   agency TEXT,  -- NULL if rep is independent
-  channel TEXT NOT NULL CHECK (channel IN ('Golf', 'Promo', 'Gift')),
+  channel TEXT NOT NULL CHECK (channel IN ('Golf', 'Outdoor', 'Gift')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -38,7 +38,7 @@ CREATE INDEX IF NOT EXISTS idx_reps_name ON reps(last_name, first_name);
 CREATE TABLE IF NOT EXISTS assignments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   zip_code TEXT NOT NULL CHECK (zip_code ~ '^\d{5}$'),
-  channel TEXT NOT NULL CHECK (channel IN ('Golf', 'Promo', 'Gift')),
+  channel TEXT NOT NULL CHECK (channel IN ('Golf', 'Outdoor', 'Gift')),
   rep_id UUID NOT NULL REFERENCES reps(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   -- Composite unique constraint: one rep per zip+channel combination
@@ -151,17 +151,17 @@ CREATE POLICY "Authenticated users can delete assignments" ON assignments
 /*
 INSERT INTO reps (first_name, last_name, email, phone, agency, channel) VALUES
   ('John', 'Smith', 'john.smith@example.com', '555-0101', NULL, 'Golf'),
-  ('Mary', 'Watson', 'mary.watson@example.com', '555-0102', 'Schauben and Co.', 'Promo'),
+  ('Mary', 'Watson', 'mary.watson@example.com', '555-0102', 'Schauben and Co.', 'Outdoor'),
   ('Bob', 'Wilson', 'bob.wilson@example.com', '555-0103', 'ABC Agency', 'Gift'),
   ('Alice', 'Brown', 'alice.brown@example.com', '555-0104', NULL, 'Golf'),
-  ('Charlie', 'Davis', 'charlie.davis@example.com', '555-0105', 'Schauben and Co.', 'Promo');
+  ('Charlie', 'Davis', 'charlie.davis@example.com', '555-0105', 'Schauben and Co.', 'Outdoor');
 
 -- Sample assignments
 INSERT INTO assignments (zip_code, channel, rep_id) 
 SELECT '12345', 'Golf', id FROM reps WHERE email = 'john.smith@example.com';
 
 INSERT INTO assignments (zip_code, channel, rep_id) 
-SELECT '12345', 'Promo', id FROM reps WHERE email = 'mary.watson@example.com';
+SELECT '12345', 'Outdoor', id FROM reps WHERE email = 'mary.watson@example.com';
 
 INSERT INTO assignments (zip_code, channel, rep_id) 
 SELECT '12345', 'Gift', id FROM reps WHERE email = 'bob.wilson@example.com';

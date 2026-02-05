@@ -312,7 +312,7 @@ export function TerritoryUpload() {
             <p className="font-medium text-blue-800">How it works:</p>
             <ul className="mt-2 text-blue-700 space-y-1 list-disc list-inside">
               <li>The channel is automatically determined from the rep's record</li>
-              <li>Each rep already has an assigned channel (Golf, Promo, or Gift)</li>
+              <li>Each rep already has an assigned channel (Golf, Outdoor, or Gift)</li>
               <li>No need to select a channel — just upload zip + email pairs</li>
             </ul>
           </div>

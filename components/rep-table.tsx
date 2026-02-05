@@ -229,7 +229,7 @@ export function RepTable({ reps, onRefresh }: RepTableProps) {
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         rep.channel === "Golf"
                           ? "bg-green-100 text-green-800"
-                          : rep.channel === "Promo"
+                          : rep.channel === "Outdoor"
                           ? "bg-blue-100 text-blue-800"
                           : "bg-purple-100 text-purple-800"
                       }`}

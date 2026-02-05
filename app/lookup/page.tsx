@@ -51,7 +51,7 @@ export default function LookupPage() {
     switch (channel) {
       case "Golf":
         return "bg-green-50 border-green-200"
-      case "Promo":
+      case "Outdoor":
         return "bg-blue-50 border-blue-200"
       case "Gift":
         return "bg-purple-50 border-purple-200"
@@ -62,7 +62,7 @@ export default function LookupPage() {
     switch (channel) {
       case "Golf":
         return "bg-green-100 text-green-800"
-      case "Promo":
+      case "Outdoor":
         return "bg-blue-100 text-blue-800"
       case "Gift":
         return "bg-purple-100 text-purple-800"

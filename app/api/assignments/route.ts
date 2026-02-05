@@ -5,7 +5,7 @@ import { logAudit } from '@/lib/audit'
 import { validateZipCode } from '@/lib/utils'
 import type { Channel } from '@/lib/types'
 
-const VALID_CHANNELS = ['Golf', 'Promo', 'Gift']
+const VALID_CHANNELS = ['Golf', 'Outdoor', 'Gift']
 
 // DELETE an assignment (by zip_code + channel)
 export async function DELETE(request: NextRequest) {
@@ -35,7 +35,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!VALID_CHANNELS.includes(channel)) {
       return NextResponse.json(
-        { error: 'Invalid channel. Must be Golf, Promo, or Gift.' },
+        { error: 'Invalid channel. Must be Golf, Outdoor, or Gift.' },
         { status: 400 }
       )
     }
@@ -107,7 +107,7 @@ export async function PUT(request: NextRequest) {
 
     if (!VALID_CHANNELS.includes(channel)) {
       return NextResponse.json(
-        { error: 'Invalid channel. Must be Golf, Promo, or Gift.' },
+        { error: 'Invalid channel. Must be Golf, Outdoor, or Gift.' },
         { status: 400 }
       )
     }

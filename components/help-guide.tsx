@@ -29,7 +29,7 @@ export function HelpGuide() {
         <CardContent>
           <p className="text-sm text-muted-foreground">
             This application helps you manage which sales reps cover which zip codes across three channels: 
-            <strong> Golf</strong>, <strong> Promo</strong>, and <strong> Gift</strong>. 
+            <strong> Golf</strong>, <strong> Outdoor</strong>, and <strong> Gift</strong>. 
             Each zip code can have one rep per channel.
           </p>
         </CardContent>
@@ -276,7 +276,7 @@ export function HelpGuide() {
                 <ol className="text-sm text-muted-foreground list-decimal list-inside mt-1 space-y-1">
                   <li>Upload all reps via <strong>Rep Upload</strong></li>
                   <li>Upload Golf territories via <strong>Territories</strong></li>
-                  <li>Upload Promo territories via <strong>Territories</strong></li>
+                  <li>Upload Outdoor territories via <strong>Territories</strong></li>
                   <li>Upload Gift territories via <strong>Territories</strong></li>
                 </ol>
               </div>
@@ -334,7 +334,7 @@ export function HelpGuide() {
             </p>
             <p className="text-sm text-muted-foreground">
               This page is read-only and doesn't require login. It shows all three channels 
-              (Golf, Promo, Gift) with the assigned rep or "Not Assigned" for each.
+              (Golf, Outdoor, Gift) with the assigned rep or "Not Assigned" for each.
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
               <p className="text-sm text-blue-800">
@@ -366,7 +366,7 @@ export function HelpGuide() {
               <div>
                 <p className="font-medium text-sm text-red-600">"Invalid channel" error</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Channel must be exactly: <code>Golf</code>, <code>Promo</code>, or <code>Gift</code> (case-sensitive).
+                  Channel must be exactly: <code>Golf</code>, <code>Outdoor</code>, or <code>Gift</code> (case-sensitive).
                 </p>
               </div>
               

@@ -159,7 +159,7 @@ export function TerritorySearch({ reps, onRefresh }: TerritorySearchProps) {
     switch (channel) {
       case "Golf":
         return "border-green-200 bg-green-50"
-      case "Promo":
+      case "Outdoor":
         return "border-blue-200 bg-blue-50"
       case "Gift":
         return "border-purple-200 bg-purple-50"
@@ -170,7 +170,7 @@ export function TerritorySearch({ reps, onRefresh }: TerritorySearchProps) {
     switch (channel) {
       case "Golf":
         return "bg-green-100 text-green-800"
-      case "Promo":
+      case "Outdoor":
         return "bg-blue-100 text-blue-800"
       case "Gift":
         return "bg-purple-100 text-purple-800"

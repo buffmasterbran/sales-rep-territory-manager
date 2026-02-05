@@ -28,7 +28,7 @@ export function RepUpload({ onSuccess }: RepUploadProps) {
   const downloadTemplate = () => {
     const template = `first_name,last_name,email,phone,agency,channel
 Mary,Watson,mary.watson@example.com,555-123-4567,Schauben and Co.,Golf
-John,Smith,john.smith@example.com,555-234-5678,,Promo
+John,Smith,john.smith@example.com,555-234-5678,,Outdoor
 Bob,Wilson,bob.wilson@example.com,555-345-6789,ABC Agency,Gift
 Alice,Brown,alice.brown@example.com,,,Golf`
 
@@ -318,13 +318,13 @@ Alice,Brown,alice.brown@example.com,,,Golf`
               </thead>
               <tbody className="font-mono text-xs">
                 <tr><td className="py-1 pr-4">Mary</td><td className="pr-4">Watson</td><td className="pr-4">mary@example.com</td><td className="pr-4">555-1234</td><td className="pr-4">Schauben and Co.</td><td>Golf</td></tr>
-                <tr><td className="py-1 pr-4">John</td><td className="pr-4">Smith</td><td className="pr-4">john@example.com</td><td className="pr-4"></td><td className="pr-4"></td><td>Promo</td></tr>
+                <tr><td className="py-1 pr-4">John</td><td className="pr-4">Smith</td><td className="pr-4">john@example.com</td><td className="pr-4"></td><td className="pr-4"></td><td>Outdoor</td></tr>
               </tbody>
             </table>
           </div>
           <p className="text-xs text-muted-foreground">* Required fields</p>
           <div className="space-y-2 text-sm">
-            <p><strong>channel</strong> - Must be: Golf, Promo, or Gift</p>
+            <p><strong>channel</strong> - Must be: Golf, Outdoor, or Gift</p>
             <p><strong>agency</strong> - Leave blank if rep is independent</p>
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-md p-4 text-sm">

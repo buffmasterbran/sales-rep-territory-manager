@@ -19,7 +19,7 @@ interface UploadResult {
   errors: { row: number; message: string }[]
 }
 
-const VALID_CHANNELS = ['Golf', 'Promo', 'Gift']
+const VALID_CHANNELS = ['Golf', 'Outdoor', 'Gift']
 
 export async function POST(request: NextRequest) {
   try {
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       // Validate channel
       const channel = row.channel.trim()
       if (!VALID_CHANNELS.includes(channel)) {
-        result.errors.push({ row: rowNum, message: `Invalid channel: ${channel}. Must be Golf, Promo, or Gift.` })
+        result.errors.push({ row: rowNum, message: `Invalid channel: ${channel}. Must be Golf, Outdoor, or Gift.` })
         continue
       }
 
