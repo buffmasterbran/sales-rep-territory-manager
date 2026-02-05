@@ -35,9 +35,11 @@ export async function GET(request: NextRequest) {
         rep_id,
         reps (
           id,
-          name,
+          first_name,
+          last_name,
           email,
           phone,
+          agency,
           channel
         )
       `)
