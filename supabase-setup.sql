@@ -55,6 +55,34 @@ CREATE INDEX IF NOT EXISTS idx_assignments_channel ON assignments(channel);
 CREATE INDEX IF NOT EXISTS idx_assignments_rep ON assignments(rep_id);
 
 -- =====================================================
+-- TABLE: audit_log
+-- Stores change history for tracking who updated what
+-- =====================================================
+CREATE TABLE IF NOT EXISTS audit_log (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id TEXT NOT NULL,        -- NetSuite employee ID
+  username TEXT NOT NULL,       -- PAWS username
+  user_full_name TEXT NOT NULL, -- Full name of user
+  action TEXT NOT NULL CHECK (action IN ('create', 'update', 'delete', 'bulk_upload')),
+  table_name TEXT NOT NULL CHECK (table_name IN ('reps', 'assignments')),
+  record_id TEXT,               -- UUID of affected record (if single record)
+  description TEXT NOT NULL,    -- Human-readable description of what changed
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index for filtering by user
+CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log(username);
+
+-- Index for filtering by table
+CREATE INDEX IF NOT EXISTS idx_audit_table ON audit_log(table_name);
+
+-- Index for filtering by action
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
+
+-- Index for sorting by time (most common query pattern)
+CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at DESC);
+
+-- =====================================================
 -- ROW LEVEL SECURITY (RLS) - OPTIONAL
 -- =====================================================
 -- NOTE: Since this app authenticates via NetSuite (not Supabase Auth),

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { logAudit } from '@/lib/audit'
 
 // GET a single rep
 export async function GET(
@@ -54,6 +55,13 @@ export async function PUT(
 
     const supabase = createAdminClient()
 
+    // Get existing rep data for logging
+    const { data: existingRep } = await supabase
+      .from('reps')
+      .select('first_name, last_name, email')
+      .eq('id', params.id)
+      .single()
+
     const { data, error } = await supabase
       .from('reps')
       .update({ 
@@ -82,6 +90,16 @@ export async function PUT(
       return NextResponse.json({ error: 'Failed to update rep' }, { status: 500 })
     }
 
+    // Log the update
+    const oldName = existingRep ? `${existingRep.first_name} ${existingRep.last_name}` : 'Unknown'
+    await logAudit(
+      session,
+      'update',
+      'reps',
+      `Updated rep: ${oldName} → ${first_name} ${last_name} (${email}) - ${channel}`,
+      params.id
+    )
+
     return NextResponse.json(data)
   } catch (error) {
     console.error('API error:', error)
@@ -102,6 +120,13 @@ export async function DELETE(
 
     const supabase = createAdminClient()
 
+    // Get rep info before deleting for the log
+    const { data: repToDelete } = await supabase
+      .from('reps')
+      .select('first_name, last_name, email, channel')
+      .eq('id', params.id)
+      .single()
+
     const { error } = await supabase
       .from('reps')
       .delete()
@@ -110,6 +135,17 @@ export async function DELETE(
     if (error) {
       console.error('Error deleting rep:', error)
       return NextResponse.json({ error: 'Failed to delete rep' }, { status: 500 })
+    }
+
+    // Log the deletion
+    if (repToDelete) {
+      await logAudit(
+        session,
+        'delete',
+        'reps',
+        `Deleted rep: ${repToDelete.first_name} ${repToDelete.last_name} (${repToDelete.email}) - ${repToDelete.channel}`,
+        params.id
+      )
     }
 
     return NextResponse.json({ success: true })

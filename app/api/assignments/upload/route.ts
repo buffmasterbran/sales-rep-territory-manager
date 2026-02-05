@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { logAudit } from '@/lib/audit'
 import { validateZipCode } from '@/lib/utils'
 import type { Channel, UploadResult } from '@/lib/types'
 
@@ -113,6 +114,14 @@ export async function POST(request: NextRequest) {
       }
 
       result.success = validAssignments.length
+
+      // Log the bulk upload
+      await logAudit(
+        session,
+        'bulk_upload',
+        'assignments',
+        `Bulk upload: ${result.success} assignments uploaded/updated, ${result.errors.length} errors`
+      )
     }
 
     return NextResponse.json(result)

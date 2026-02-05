@@ -7,7 +7,8 @@ import { RepUpload } from "@/components/rep-upload"
 import { TerritoryUpload } from "@/components/territory-upload"
 import { TerritorySearch } from "@/components/territory-search"
 import { HelpGuide } from "@/components/help-guide"
-import { Users, UserPlus, Upload, Search, HelpCircle, Loader2 } from "lucide-react"
+import { AuditLog } from "@/components/audit-log"
+import { Users, UserPlus, Upload, Search, HelpCircle, History, Loader2 } from "lucide-react"
 import type { Rep } from "@/lib/types"
 
 export default function AdminPage() {
@@ -42,7 +43,7 @@ export default function AdminPage() {
       </div>
 
       <Tabs defaultValue="reps" className="space-y-4">
-        <TabsList className="grid w-full max-w-3xl grid-cols-5">
+        <TabsList className="grid w-full max-w-4xl grid-cols-6">
           <TabsTrigger value="reps" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Reps
@@ -58,6 +59,10 @@ export default function AdminPage() {
           <TabsTrigger value="lookup" className="flex items-center gap-2">
             <Search className="h-4 w-4" />
             Lookup
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2">
+            <History className="h-4 w-4" />
+            History
           </TabsTrigger>
           <TabsTrigger value="help" className="flex items-center gap-2">
             <HelpCircle className="h-4 w-4" />
@@ -91,6 +96,10 @@ export default function AdminPage() {
           ) : (
             <TerritorySearch reps={reps} onRefresh={fetchReps} />
           )}
+        </TabsContent>
+
+        <TabsContent value="history">
+          <AuditLog />
         </TabsContent>
 
         <TabsContent value="help">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { logAudit } from '@/lib/audit'
 import type { Channel } from '@/lib/types'
 
 interface UploadRow {
@@ -153,6 +154,16 @@ export async function POST(request: NextRequest) {
       } else {
         result.updated++
       }
+    }
+
+    // Log the bulk upload
+    if (result.created > 0 || result.updated > 0) {
+      await logAudit(
+        session,
+        'bulk_upload',
+        'reps',
+        `Bulk upload: ${result.created} created, ${result.updated} updated, ${result.errors.length} errors`
+      )
     }
 
     return NextResponse.json(result)

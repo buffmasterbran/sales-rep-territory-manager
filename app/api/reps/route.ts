@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { logAudit } from '@/lib/audit'
 import type { Rep } from '@/lib/types'
 
 // GET all reps
@@ -69,6 +70,15 @@ export async function POST(request: NextRequest) {
       console.error('Error creating rep:', error)
       return NextResponse.json({ error: 'Failed to create rep' }, { status: 500 })
     }
+
+    // Log the creation
+    await logAudit(
+      session,
+      'create',
+      'reps',
+      `Created rep: ${first_name} ${last_name} (${email}) - ${channel}`,
+      data.id
+    )
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {

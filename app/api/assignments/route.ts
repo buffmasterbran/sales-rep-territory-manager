@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { logAudit } from '@/lib/audit'
 import { validateZipCode } from '@/lib/utils'
 import type { Channel } from '@/lib/types'
 
@@ -41,6 +42,14 @@ export async function DELETE(request: NextRequest) {
 
     const supabase = createAdminClient()
 
+    // Get the assignment info before deleting for the log
+    const { data: assignmentToDelete } = await supabase
+      .from('assignments')
+      .select('id, rep_id, reps(first_name, last_name)')
+      .eq('zip_code', zip_code)
+      .eq('channel', channel)
+      .single()
+
     const { error } = await supabase
       .from('assignments')
       .delete()
@@ -51,6 +60,18 @@ export async function DELETE(request: NextRequest) {
       console.error('Error deleting assignment:', error)
       return NextResponse.json({ error: 'Failed to delete assignment' }, { status: 500 })
     }
+
+    // Log the deletion
+    const repName = assignmentToDelete?.reps 
+      ? `${(assignmentToDelete.reps as any).first_name} ${(assignmentToDelete.reps as any).last_name}`
+      : 'Unknown'
+    await logAudit(
+      session,
+      'delete',
+      'assignments',
+      `Deleted assignment: ${zip_code} (${channel}) - was assigned to ${repName}`,
+      assignmentToDelete?.id
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -111,6 +132,21 @@ export async function PUT(request: NextRequest) {
       )
     }
 
+    // Check if assignment already exists (for logging purposes)
+    const { data: existingAssignment } = await supabase
+      .from('assignments')
+      .select('id, rep_id, reps(first_name, last_name)')
+      .eq('zip_code', zip_code)
+      .eq('channel', channel)
+      .single()
+
+    // Get new rep name for logging
+    const { data: newRep } = await supabase
+      .from('reps')
+      .select('first_name, last_name')
+      .eq('id', rep_id)
+      .single()
+
     // Upsert the assignment
     const { data, error } = await supabase
       .from('assignments')
@@ -124,6 +160,29 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('Error upserting assignment:', error)
       return NextResponse.json({ error: 'Failed to save assignment' }, { status: 500 })
+    }
+
+    // Log the assignment change
+    const newRepName = newRep ? `${newRep.first_name} ${newRep.last_name}` : 'Unknown'
+    if (existingAssignment) {
+      const oldRepName = existingAssignment.reps 
+        ? `${(existingAssignment.reps as any).first_name} ${(existingAssignment.reps as any).last_name}`
+        : 'Unknown'
+      await logAudit(
+        session,
+        'update',
+        'assignments',
+        `Reassigned ${zip_code} (${channel}): ${oldRepName} → ${newRepName}`,
+        data.id
+      )
+    } else {
+      await logAudit(
+        session,
+        'create',
+        'assignments',
+        `Assigned ${zip_code} (${channel}) to ${newRepName}`,
+        data.id
+      )
     }
 
     return NextResponse.json(data)
