@@ -34,7 +34,7 @@ export async function logAudit(
       user_full_name: session.fullName,
       action,
       table_name: tableName,
-      record_id: recordId || null,
+      record_id: recordId,
       description,
     }
 
